@@ -100,6 +100,12 @@ public class ThriftType
         return thriftItems.values();
     }
 
+    @SuppressWarnings("unused")
+    public void setSinkAddInfo(String sinkAddInfo)
+    {
+        this.sinkAddInfo = sinkAddInfo;
+    }
+
     /**
      * Given a position, return the field at that position.
      *
