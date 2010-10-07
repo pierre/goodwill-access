@@ -138,6 +138,23 @@ public class ThriftType
         return thriftItems.get(i);
     }
 
+    /**
+     * Given a name, return the field matching the name.
+     *
+     * @param name ThriftField name
+     * @return the ThriftField object
+     */
+    public ThriftField getFieldByName(String name)
+    {
+        for (ThriftField field : thriftItems.values()) {
+            if (field.getName().equals(name)) {
+                return field;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public String toString()
     {

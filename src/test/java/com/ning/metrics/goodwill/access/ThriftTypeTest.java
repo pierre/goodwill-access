@@ -54,6 +54,25 @@ public class ThriftTypeTest
     }
 
     @Test
+    public void testFindByName() throws Exception
+    {
+        ThriftField fieldNull = thriftType.getFieldByName("Idontexist");
+        Assert.assertNull(fieldNull);
+
+        ThriftField field = thriftType.getFieldByName(THRIFT_FIELD_NAME);
+        Assert.assertNotNull(field);
+        Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
+        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
+        Assert.assertEquals(field.getPosition(), THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getDescription(), THRIFT_FIELD_DESCRIPTION);
+        Assert.assertEquals(field.getSql().getType(), THRIFT_FIELD_SQL_TYPE);
+        Assert.assertEquals(field.getSql().getLength(), THRIFT_FIELD_SQL_LENGTH);
+        Assert.assertEquals(field.getSql().getScale(), THRIFT_FIELD_SQL_SCALE);
+        Assert.assertEquals(field.getSql().getPrecision(), THRIFT_FIELD_SQL_PRECISION);
+        Assert.assertEquals(field, thriftFieldWithSQLAndDescription);
+    }
+
+    @Test
     public void testToJson() throws Exception
     {
         thriftType = ThriftType.decode(thriftType.toJSON().toString());
