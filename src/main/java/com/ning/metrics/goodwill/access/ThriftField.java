@@ -16,37 +16,31 @@
 
 package com.ning.metrics.goodwill.access;
 
-import org.apache.thrift.protocol.TType;
+import com.google.common.collect.ImmutableMap;
+import com.ning.serialization.SchemaField;
+import com.ning.serialization.SchemaFieldType;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * Describe a TField
+ * Describe a SchemaField in Goodwill.
+ * This is basically the union of a SchemaField and extra metadata for the SQL sink.
+ *
+ * @see com.ning.serialization.SchemaField
  */
 public class ThriftField
 {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    @JsonProperty
-    private String name;
     public static final String JSON_THRIFT_FIELD_NAME = "name";
-
-    @JsonProperty
-    private byte type;
     public static final String JSON_THRIFT_FIELD_TYPE = "type";
-
-    @JsonProperty
-    private Integer position;
-    public static final String JSON_THRIFT_FIELD_POSITION = "position";
-
-    @JsonProperty
-    private String description;
+    public static final String JSON_THRIFT_FIELD_ID = "position";
     public static final String JSON_THRIFT_FIELD_DESCRIPTION = "description";
 
     /*
@@ -55,41 +49,66 @@ public class ThriftField
      * Given the large range of data types (Netezza, Oracle, MySQL, ...), no enforcement
      * is performed (plain Strings).
      */
-    @JsonProperty
-    private Sql sql;
     public static final String JSON_THRIFT_FIELD_SQL_KEY = "sql";
     public static final String JSON_THRIFT_FIELD_SQL_TYPE = "type";
     public static final String JSON_THRIFT_FIELD_SQL_LENGTH = "length";
     public static final String JSON_THRIFT_FIELD_SQL_SCALE = "scale";
     public static final String JSON_THRIFT_FIELD_SQL_PRECISION = "precision";
 
+    private final SchemaField schemaField;
+    private final String description;
+    private Sql sql;
 
-    /* Human readable representation of Thrift internal types */
-    private static final String TTYPE_STRING = "string";
-    private static final String TTYPE_I64 = "i64";
-    private static final String TTYPE_I32 = "i32";
-    private static final String TTYPE_I16 = "i16";
-    private static final String TTYPE_BYTE = "i8";
-    private static final String TTYPE_BOOL = "bool";
-    private static final String TTYPE_DOUBLE = "double";
-
-    /*
-     * Default constructor for Jackson.
+    /**
+     * Jackson constructor
+     * <p/>
+     * {
+     * "name": "myField",
+     * "type": "string",
+     * "position": 1,
+     * "description": "string",
+     * "sql": {
+     * "type": "nvarchar",
+     * "length": 255,
+     * "scale": null,
+     * "precision": null
+     * }
+     *
+     * @param name        Schema field name
+     * @param type        Schema field type. This is not necessarily a Thrift type. @see SchemaFieldType
+     * @param id          field position
+     * @param description Short description of the field
+     * @param sql         SQL object (used by the sink)
      */
-
+    @JsonCreator
     @SuppressWarnings("unused")
-    public ThriftField()
+    public ThriftField(
+        @JsonProperty(JSON_THRIFT_FIELD_NAME) String name,
+        @JsonProperty(JSON_THRIFT_FIELD_TYPE) String type,
+        @JsonProperty(JSON_THRIFT_FIELD_ID) short id,
+        @JsonProperty(JSON_THRIFT_FIELD_DESCRIPTION) String description,
+        @JsonProperty(JSON_THRIFT_FIELD_SQL_KEY) Sql sql
+    )
     {
+        this(name, type, id, description, sql == null ? null : sql.getType(), sql == null ? null : sql.getLength(), sql == null ? null : sql.getScale(), sql == null ? null : sql.getPrecision());
     }
 
-    /*
+    /**
      * Manual constructor, typically used by Goodwill stores.
+     *
+     * @param name         Schema field name
+     * @param type         Schema field type. This is not necessarily a Thrift type. @see SchemaFieldType
+     * @param id           field position
+     * @param description  Short description of the field
+     * @param sqlType      SQL type 9varchar, int, ...)
+     * @param sqlLength    SQL type length
+     * @param sqlScale     SQL type scale
+     * @param sqlPrecision SQL type precision
      */
-
     public ThriftField(
         String name,
-        String typeString,
-        Integer position,
+        String type,
+        short id,
         String description,
         String sqlType,
         Integer sqlLength,
@@ -100,23 +119,21 @@ public class ThriftField
         if (name == null) {
             throw new IllegalArgumentException("ThriftField name can't be null");
         }
-        this.name = name;
-
-        this.type = ttypeFromString(typeString);
-
-        if (position == null) {
-            throw new IllegalArgumentException("ThriftField position can't be null");
-        }
-        this.position = position;
 
         if ((sqlType == null || sqlType.equals("string")) && (sqlScale != null || sqlPrecision != null)) {
             throw new IllegalArgumentException("Strings cannot have a scale or precision");
         }
 
+        this.schemaField = SchemaFieldType.createSchemaField(name, type, id);
+
         // Optional fields
         sql = new Sql(sqlType, sqlLength, sqlScale, sqlPrecision);
         this.description = description;
+    }
 
+    public ThriftField(SchemaField field)
+    {
+        this(field.getName(), field.getType().name(), field.getId(), null, null);
     }
 
     public static ThriftField decode(
@@ -126,68 +143,22 @@ public class ThriftField
         return mapper.readValue(thriftItemJson, ThriftField.class);
     }
 
-    /**
-     * Lookup a TType associated with a human readable string
-     *
-     * @param type human readable string
-     * @return the TType associated to the type
-     */
-    private byte ttypeFromString(String type)
+    @JsonValue
+    @SuppressWarnings({"unchecked", "unused"})
+    public ImmutableMap toMap()
     {
-        if (type.equals(TTYPE_STRING)) {
-            return TType.STRING;
-        }
-        else if (type.equals(TTYPE_I64)) {
-            return TType.I64;
-        }
-        else if (type.equals(TTYPE_I32)) {
-            return TType.I32;
-        }
-        else if (type.equals(TTYPE_I16)) {
-            return TType.I16;
-        }
-        else if (type.equals(TTYPE_BYTE)) {
-            return TType.BYTE;
-        }
-        else if (type.equals(TTYPE_BOOL)) {
-            return TType.BOOL;
-        }
-        else if (type.equals(TTYPE_DOUBLE)) {
-            return TType.DOUBLE;
-        }
-        else {
-            throw new IllegalArgumentException(String.format("%s not a valid TType", type));
-        }
+        return new ImmutableMap.Builder()
+            .put(JSON_THRIFT_FIELD_NAME, getName())
+            .put(JSON_THRIFT_FIELD_TYPE, getType())
+            .put(JSON_THRIFT_FIELD_ID, getId())
+            .put(JSON_THRIFT_FIELD_DESCRIPTION, getDescription() == null ? "" : getDescription())
+            .put(JSON_THRIFT_FIELD_SQL_KEY, getSql() == null ? "" : getSql())
+            .build();
     }
 
     /**
-     * Return a human readable string representing a TType
-     *
-     * @param b TField type
-     * @return human readable representation of the type b
+     * Extra information for the SQL Sink
      */
-    private static String typeStringfromTType(byte b)
-    {
-        switch (b) {
-            case TType.STRING:
-                return TTYPE_STRING;
-            case TType.I64:
-                return TTYPE_I64;
-            case TType.I32:
-                return TTYPE_I32;
-            case TType.I16:
-                return TTYPE_I16;
-            case TType.BYTE:
-                return TTYPE_BYTE;
-            case TType.BOOL:
-                return TTYPE_BOOL;
-            case TType.DOUBLE:
-                return TTYPE_DOUBLE;
-            default:
-                throw new IllegalArgumentException(String.format("%d not a valid TType", b));
-        }
-    }
-
     public static class Sql
     {
         private String type;
@@ -197,10 +168,10 @@ public class ThriftField
 
         @JsonCreator
         public Sql(
-            @JsonProperty("type") String type,
-            @JsonProperty("length") Integer length,
-            @JsonProperty("scale") Integer scale,
-            @JsonProperty("precision") Integer precision)
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_TYPE) String type,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_LENGTH) Integer length,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_SCALE) Integer scale,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_PRECISION) Integer precision)
         {
             this.type = type;
             this.length = length;
@@ -208,25 +179,34 @@ public class ThriftField
             this.precision = precision;
         }
 
-        @SuppressWarnings("unused")
+
+        @JsonValue
+        @SuppressWarnings({"unchecked", "unused"})
+        public ImmutableMap toMap()
+        {
+            return new ImmutableMap.Builder()
+                .put(JSON_THRIFT_FIELD_SQL_TYPE, getType() == null ? "" : getType())
+                .put(JSON_THRIFT_FIELD_SQL_LENGTH, getLength() == null ? "" : getLength())
+                .put(JSON_THRIFT_FIELD_SQL_SCALE, getScale() == null ? "" : getScale())
+                .put(JSON_THRIFT_FIELD_SQL_PRECISION, getPrecision() == null ? "" : getPrecision())
+                .build();
+        }
+
         public String getType()
         {
             return type;
         }
 
-        @SuppressWarnings("unused")
         public Integer getLength()
         {
             return length;
         }
 
-        @SuppressWarnings("unused")
         public Integer getScale()
         {
             return scale;
         }
 
-        @SuppressWarnings("unused")
         public Integer getPrecision()
         {
             return precision;
@@ -235,35 +215,17 @@ public class ThriftField
 
     public String getName()
     {
-        return name;
+        return schemaField.getName();
     }
 
-    public String getType()
+    public SchemaFieldType getType()
     {
-        return ThriftField.typeStringfromTType(type);
+        return schemaField.getType();
     }
 
-    /**
-     * Set the Thrift type from a human readable String representation.
-     * This is really to help Jackson set the type correctly from JSON.
-     *
-     * @param type Human readable String represenation of the Thrift Type.
-     */
-    @SuppressWarnings("unused")
-    private void setType(String type)
+    public short getId()
     {
-        this.type = ttypeFromString(type);
-    }
-
-    /**
-     * Return the field position of the described ThriftField in the associated
-     * ThriftType.
-     *
-     * @return the field position
-     */
-    public Integer getPosition()
-    {
-        return position;
+        return schemaField.getId();
     }
 
     public Sql getSql()
@@ -284,9 +246,9 @@ public class ThriftField
         }
         catch (JsonGenerationException e) {
             return "ThriftField{" +
-                JSON_THRIFT_FIELD_NAME + "='" + name + '\'' +
-                ", " + JSON_THRIFT_FIELD_TYPE + "='" + ThriftField.typeStringfromTType(type) + '\'' +
-                ", " + JSON_THRIFT_FIELD_POSITION + "=" + position +
+                JSON_THRIFT_FIELD_NAME + "='" + getName() + '\'' +
+                ", " + JSON_THRIFT_FIELD_TYPE + "='" + getType() + '\'' +
+                ", " + JSON_THRIFT_FIELD_ID + "=" + getId() +
                 ", " + JSON_THRIFT_FIELD_SQL_TYPE + "='" + sql.type + '\'' +
                 ", " + JSON_THRIFT_FIELD_SQL_LENGTH + "=" + sql.length +
                 ", " + JSON_THRIFT_FIELD_SQL_SCALE + "=" + sql.scale +
@@ -296,9 +258,9 @@ public class ThriftField
         }
         catch (IOException e) {
             return "ThriftField{" +
-                JSON_THRIFT_FIELD_NAME + "='" + name + '\'' +
-                ", " + JSON_THRIFT_FIELD_TYPE + "='" + ThriftField.typeStringfromTType(type) + '\'' +
-                ", " + JSON_THRIFT_FIELD_POSITION + "=" + position +
+                JSON_THRIFT_FIELD_NAME + "='" + getName() + '\'' +
+                ", " + JSON_THRIFT_FIELD_TYPE + "='" + getType() + '\'' +
+                ", " + JSON_THRIFT_FIELD_ID + "=" + getId() +
                 ", " + JSON_THRIFT_FIELD_SQL_TYPE + "='" + sql.type + '\'' +
                 ", " + JSON_THRIFT_FIELD_SQL_LENGTH + "=" + sql.length +
                 ", " + JSON_THRIFT_FIELD_SQL_SCALE + "=" + sql.scale +
@@ -330,7 +292,6 @@ public class ThriftField
      *
      * @return a human readable representation of the SQL type
      */
-    @JsonIgnore
     @SuppressWarnings("unused")
     public String getFullSQLType()
     {

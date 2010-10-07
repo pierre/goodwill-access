@@ -30,7 +30,7 @@ public class ThriftTypeTest
     private static final String THRIFT_TYPE_NAME = "FrontDoorVisit";
     private static final String THRIFT_FIELD_NAME = "fileName";
     private static final String THRIFT_FIELD_TYPE = "string";
-    private static final Integer THRIFT_FIELD_POSITION = 1;
+    private static final short THRIFT_FIELD_POSITION = 1;
     private static final String THRIFT_FIELD_DESCRIPTION = "Name of the file attached to a blob";
     private static final String THRIFT_FIELD_SQL_TYPE = "varchar";
     private static final Integer THRIFT_FIELD_SQL_LENGTH = 255;
@@ -62,8 +62,8 @@ public class ThriftTypeTest
         ThriftField field = thriftType.getFieldByName(THRIFT_FIELD_NAME);
         Assert.assertNotNull(field);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
-        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
-        Assert.assertEquals(field.getPosition(), THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
+        Assert.assertEquals(field.getId(), THRIFT_FIELD_POSITION);
         Assert.assertEquals(field.getDescription(), THRIFT_FIELD_DESCRIPTION);
         Assert.assertEquals(field.getSql().getType(), THRIFT_FIELD_SQL_TYPE);
         Assert.assertEquals(field.getSql().getLength(), THRIFT_FIELD_SQL_LENGTH);

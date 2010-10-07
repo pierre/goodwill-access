@@ -16,9 +16,11 @@
 
 package com.ning.metrics.goodwill.access;
 
+import com.google.common.collect.ImmutableMap;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -29,37 +31,98 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Describe a Schema in Goodwill.
+ * This is basically a union of a Schema and extra metadata for the Sink.
+ *
+ * @see com.ning.serialization.Schema
+ */
 public class ThriftType
 {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    @JsonProperty
-    private String name;
-    public static final String JSON_THRIFT_TYPE_NAME = "name";
-
-    @JsonIgnore
-    private HashMap<Integer, ThriftField> thriftItems = new HashMap<Integer, ThriftField>();
-    @SuppressWarnings("unused")
-    public static final String JSON_THRIFT_TYPE_SCHEMA = "schema";
-
-    @JsonProperty
-    @SuppressWarnings("unused")
+    private final String name;
     private String sinkAddInfo;
-    @SuppressWarnings("unused")
+    private final HashMap<Short, ThriftField> thriftItems = new HashMap<Short, ThriftField>();
+
+    public static final String JSON_THRIFT_TYPE_NAME = "name";
+    public static final String JSON_THRIFT_TYPE_SCHEMA = "schema";
     public static final String JSON_THRIFT_TYPE_SINK_ADD_INFO = "sinkAddInfo";
 
-    /*
-     * Default constructor for Jackson.
+    /**
+     * Jackson constructor
+     * <p/>
+     * {
+     * "sinkAddInfo": null,
+     * "name": "hello",
+     * "schema": [
+     * {
+     * "name": "my hello attribute",
+     * "type": "string",
+     * "position": 1,
+     * "description": "awesome attribute",
+     * "sql": {
+     * "type": "nvarchar",
+     * "length": null,
+     * "scale": null,
+     * "precision": null
+     * }
+     * },
+     * {
+     * "name": "dsfdfsfds",
+     * "type": "bool",
+     * "position": 2,
+     * "description": "dfsfdsfds",
+     * "sql": {
+     * "type": "boolean",
+     * "length": null,
+     * "scale": null,
+     * "precision": null
+     * }
+     * },
+     * {
+     * "name": "wer",
+     * "type": "double",
+     * "position": 3,
+     * "description": "wer",
+     * "sql": {
+     * "type": "numeric",
+     * "length": null,
+     * "scale": 12,
+     * "precision": 42
+     * }
+     * }
+     * ]
+     * }
+     *
+     * @param name        Schema name
+     * @param items       List of fields
+     * @param sinkAddInfo extra information for the Sink
      */
-
-    public ThriftType()
+    @JsonCreator
+    @SuppressWarnings("unused")
+    public ThriftType(
+        @JsonProperty(JSON_THRIFT_TYPE_NAME) String name,
+        @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<ThriftField> items,
+        @JsonProperty(JSON_THRIFT_TYPE_SINK_ADD_INFO) String sinkAddInfo
+    )
     {
+        this(name, items);
+        setSinkAddInfo(sinkAddInfo);
     }
 
+    /**
+     * Manual constructor, typically used by Goodwill stores.
+     *
+     * @param name  Schema name
+     * @param items List of fields
+     */
     public ThriftType(String name, List<ThriftField> items)
     {
         this.name = name;
-        setSchema(items);
+        for (ThriftField field : items) {
+            addThriftField(field);
+        }
     }
 
     public static ThriftType decode(
@@ -69,6 +132,17 @@ public class ThriftType
         return mapper.readValue(thriftJson, ThriftType.class);
     }
 
+    @JsonValue
+    @SuppressWarnings({"unchecked", "unused"})
+    public ImmutableMap toMap()
+    {
+        return new ImmutableMap.Builder()
+            .put(JSON_THRIFT_TYPE_NAME, getName())
+            .put(JSON_THRIFT_TYPE_SCHEMA, getSchema())
+            .put(JSON_THRIFT_TYPE_SINK_ADD_INFO, sinkAddInfo == null ? "" : sinkAddInfo)
+            .build();
+    }
+
     /**
      * Add a field in the Thrift. The code does not enforce sanity w.r.t. field positions.
      *
@@ -76,7 +150,7 @@ public class ThriftType
      */
     public void addThriftField(ThriftField thriftField)
     {
-        thriftItems.put(thriftField.getPosition(), thriftField);
+        thriftItems.put(thriftField.getId(), thriftField);
     }
 
     public String getName()
@@ -85,26 +159,11 @@ public class ThriftType
     }
 
     /**
-     * Given a list of ThriftField, build the internal hashmap of fields.
-     * This is really to help Jackson decode a JSON correctly.
-     *
-     * @param items list of fields for the type
-     */
-    private void setSchema(List<ThriftField> items)
-    {
-        for (ThriftField field : items) {
-            addThriftField(field);
-        }
-    }
-
-    /**
      * Get the schema as a collection of fields.
      * We guarantee the ordering by field id.
      *
      * @return the sorted collection of fields
      */
-    @JsonProperty
-    @SuppressWarnings("unused")
     public ArrayList<ThriftField> getSchema()
     {
         ArrayList<ThriftField> items = new ArrayList<ThriftField>(thriftItems.values());
@@ -114,7 +173,7 @@ public class ThriftType
             @Override
             public int compare(ThriftField left, ThriftField right)
             {
-                return Integer.valueOf(left.getPosition()).compareTo(right.getPosition());
+                return Short.valueOf(left.getId()).compareTo(right.getId());
             }
         });
 
@@ -133,7 +192,7 @@ public class ThriftType
      * @param i position in the Thrift (start with 1)
      * @return the ThriftField object
      */
-    public ThriftField getFieldByPosition(int i)
+    public ThriftField getFieldByPosition(short i)
     {
         return thriftItems.get(i);
     }
@@ -163,14 +222,14 @@ public class ThriftType
         }
         catch (JsonGenerationException e) {
             return "ThriftType{" +
-                JSON_THRIFT_TYPE_NAME + "='" + name + '\'' +
-                ", thriftItems=" + thriftItems +
+                JSON_THRIFT_TYPE_NAME + "='" + getName() + '\'' +
+                ", thriftItems=" + getSchema() +
                 '}';
         }
         catch (IOException e) {
             return "ThriftType{" +
-                JSON_THRIFT_TYPE_NAME + "='" + name + '\'' +
-                ", thriftItems=" + thriftItems +
+                JSON_THRIFT_TYPE_NAME + "='" + getName() + '\'' +
+                ", thriftItems=" + getSchema() +
                 '}';
         }
     }

@@ -28,7 +28,7 @@ public class ThriftFieldTest
 {
     private static final String THRIFT_FIELD_NAME = "fileName";
     private static final String THRIFT_FIELD_TYPE = "string";
-    private static final Integer THRIFT_FIELD_POSITION = 1;
+    private static final short THRIFT_FIELD_POSITION = 1;
     private static final String THRIFT_FIELD_DESCRIPTION = "Name of the file attached to a blob";
     private static final String THRIFT_FIELD_SQL_TYPE = "varchar";
     private static final Integer THRIFT_FIELD_SQL_LENGTH = 255;
@@ -78,27 +78,27 @@ public class ThriftFieldTest
 
         field = mapper.readValue(new ByteArrayInputStream(thriftField.toJSON().toByteArray()), ThriftField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
-        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
-        Assert.assertEquals((int) field.getPosition(), (int) THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
+        Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
 
         field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithSQL.toJSON().toByteArray()), ThriftField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
-        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
-        Assert.assertEquals((int) field.getPosition(), (int) THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
+        Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
         jsonThriftFieldSQL = field.getSql();
         Assert.assertEquals(jsonThriftFieldSQL.getType(), THRIFT_FIELD_SQL_TYPE);
         Assert.assertEquals((int) jsonThriftFieldSQL.getLength(), (int) THRIFT_FIELD_SQL_LENGTH);
 
         field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithDescription.toJSON().toByteArray()), ThriftField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
-        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
-        Assert.assertEquals((int) field.getPosition(), (int) THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
+        Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
         Assert.assertEquals(field.getDescription(), THRIFT_FIELD_DESCRIPTION);
 
         field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithSQLAndDescription.toJSON().toByteArray()), ThriftField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
-        Assert.assertEquals(field.getType(), THRIFT_FIELD_TYPE);
-        Assert.assertEquals((int) field.getPosition(), (int) THRIFT_FIELD_POSITION);
+        Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
+        Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
         Assert.assertEquals(field.getDescription(), THRIFT_FIELD_DESCRIPTION);
         jsonThriftFieldSQL = field.getSql();
         Assert.assertEquals(jsonThriftFieldSQL.getType(), THRIFT_FIELD_SQL_TYPE);
