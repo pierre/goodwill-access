@@ -17,6 +17,7 @@
 package com.ning.metrics.goodwill.access;
 
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -34,7 +35,7 @@ public class ThriftType
     private String name;
     public static final String JSON_THRIFT_TYPE_NAME = "name";
 
-    @JsonProperty
+    @JsonIgnore
     private HashMap<Integer, ThriftField> thriftItems = new HashMap<Integer, ThriftField>();
     @SuppressWarnings("unused")
     public static final String JSON_THRIFT_TYPE_SCHEMA = "schema";
@@ -94,6 +95,7 @@ public class ThriftType
         }
     }
 
+    @JsonProperty
     @SuppressWarnings("unused")
     public Collection<ThriftField> getSchema()
     {
