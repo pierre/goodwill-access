@@ -23,7 +23,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,11 +97,28 @@ public class ThriftType
         }
     }
 
+    /**
+     * Get the schema as a collection of fields.
+     * We guarantee the ordering by field id.
+     *
+     * @return the sorted collection of fields
+     */
     @JsonProperty
     @SuppressWarnings("unused")
-    public Collection<ThriftField> getSchema()
+    public ArrayList<ThriftField> getSchema()
     {
-        return thriftItems.values();
+        ArrayList<ThriftField> items = new ArrayList<ThriftField>(thriftItems.values());
+
+        Collections.sort(items, new Comparator<ThriftField>()
+        {
+            @Override
+            public int compare(ThriftField left, ThriftField right)
+            {
+                return Integer.valueOf(left.getPosition()).compareTo(right.getPosition());
+            }
+        });
+
+        return items;
     }
 
     @SuppressWarnings("unused")

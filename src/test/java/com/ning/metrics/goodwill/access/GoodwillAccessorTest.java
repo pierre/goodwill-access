@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 
 public class GoodwillAccessorTest
 {
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testGetSchema() throws Exception
     {
         GoodwillAccessor accessor = new GoodwillAccessor("localhost", 8080);
