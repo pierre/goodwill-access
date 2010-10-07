@@ -9,7 +9,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Future;
 
 public class GoodwillAccessor
 {
@@ -21,9 +23,6 @@ public class GoodwillAccessor
 
     private final AsyncHttpClient client = new AsyncHttpClient();
 
-
-    final AtomicReference<ThriftType> thriftFound = new AtomicReference<ThriftType>(null);
-
     public GoodwillAccessor(String host, int port)
     {
         this.host = host;
@@ -32,22 +31,22 @@ public class GoodwillAccessor
         this.url = String.format("http://%s:%d/registrar", host, port);
     }
 
-    public void getSchema(String schemaName)
+    public Future<ThriftType> getSchema(String schemaName)
     {
         try {
-            client.prepareGet(String.format("%s/%s", url, schemaName)).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<Response>()
+            return client.prepareGet(String.format("%s/%s", url, schemaName)).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<ThriftType>()
             {
                 @Override
-                public Response onCompleted(Response response) throws Exception
+                public ThriftType onCompleted(Response response) throws Exception
                 {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
-                    thriftFound.set(mapper.readValue(reader, ThriftType.class));
+                    ThriftType thrift = mapper.readValue(reader, ThriftType.class);
 
                     reader.close();
 
-                    return response;
+                    return thrift;
                 }
 
                 @Override
@@ -59,11 +58,44 @@ public class GoodwillAccessor
         }
         catch (IOException e) {
             log.warn(String.format("Error getting Schema list from %s:%d", host, port));
+            return null;
         }
     }
 
-    public ThriftType getThrift()
+    /**
+     * Get all schemata.
+     * <p/>
+     * Use schemata, instead of schemas, which is closer to the original σχήματα.
+     */
+    public Future<List<ThriftType>> getSchemata()
     {
-        return thriftFound.get();
+        try {
+            return client.prepareGet(url).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<List<ThriftType>>()
+            {
+                @Override
+                public List<ThriftType> onCompleted(Response response) throws Exception
+                {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    HashMap<String, List<ThriftType>> map = mapper.readValue(reader, HashMap.class);
+                    List<ThriftType> thriftTypes = map.get("types");
+
+                    reader.close();
+
+                    return thriftTypes;
+                }
+
+                @Override
+                public void onThrowable(Throwable t)
+                {
+                    log.warn(t);
+                }
+            });
+        }
+        catch (IOException e) {
+            log.warn(String.format("Error getting Schema list from %s:%d", host, port));
+            return null;
+        }
     }
 }
