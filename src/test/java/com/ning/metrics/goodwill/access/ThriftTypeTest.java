@@ -37,7 +37,7 @@ public class ThriftTypeTest
     private static final Integer THRIFT_FIELD_SQL_SCALE = 12;
     private static final Integer THRIFT_FIELD_SQL_PRECISION = 4;
 
-    private ThriftField thriftFieldWithSQLAndDescription;
+    private GoodwillSchemaField goodwillSchemaFieldWithSQLAndDescription;
     private GoodwillSchema goodwillSchema;
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -45,21 +45,21 @@ public class ThriftTypeTest
     @BeforeTest(alwaysRun = true)
     public void setUp()
     {
-        thriftFieldWithSQLAndDescription = new ThriftField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
+        goodwillSchemaFieldWithSQLAndDescription = new GoodwillSchemaField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
             THRIFT_FIELD_DESCRIPTION, THRIFT_FIELD_SQL_TYPE, THRIFT_FIELD_SQL_LENGTH, THRIFT_FIELD_SQL_SCALE, THRIFT_FIELD_SQL_PRECISION);
 
-        ArrayList<ThriftField> fields = new ArrayList<ThriftField>();
-        fields.add(thriftFieldWithSQLAndDescription);
+        ArrayList<GoodwillSchemaField> fields = new ArrayList<GoodwillSchemaField>();
+        fields.add(goodwillSchemaFieldWithSQLAndDescription);
         goodwillSchema = new GoodwillSchema(THRIFT_TYPE_NAME, fields);
     }
 
     @Test
     public void testFindByName() throws Exception
     {
-        ThriftField fieldNull = goodwillSchema.getFieldByName("Idontexist");
+        GoodwillSchemaField fieldNull = goodwillSchema.getFieldByName("Idontexist");
         Assert.assertNull(fieldNull);
 
-        ThriftField field = goodwillSchema.getFieldByName(THRIFT_FIELD_NAME);
+        GoodwillSchemaField field = goodwillSchema.getFieldByName(THRIFT_FIELD_NAME);
         Assert.assertNotNull(field);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
@@ -69,7 +69,7 @@ public class ThriftTypeTest
         Assert.assertEquals(field.getSql().getLength(), THRIFT_FIELD_SQL_LENGTH);
         Assert.assertEquals(field.getSql().getScale(), THRIFT_FIELD_SQL_SCALE);
         Assert.assertEquals(field.getSql().getPrecision(), THRIFT_FIELD_SQL_PRECISION);
-        Assert.assertEquals(field, thriftFieldWithSQLAndDescription);
+        Assert.assertEquals(field, goodwillSchemaFieldWithSQLAndDescription);
     }
 
     @Test
@@ -85,6 +85,6 @@ public class ThriftTypeTest
     private void runAllAssertions(GoodwillSchema type) throws IOException
     {
         Assert.assertEquals(type.getName(), THRIFT_TYPE_NAME);
-        Assert.assertEquals(type.getFieldByPosition(THRIFT_FIELD_POSITION).toString(), thriftFieldWithSQLAndDescription.toString());
+        Assert.assertEquals(type.getFieldByPosition(THRIFT_FIELD_POSITION).toString(), goodwillSchemaFieldWithSQLAndDescription.toString());
     }
 }

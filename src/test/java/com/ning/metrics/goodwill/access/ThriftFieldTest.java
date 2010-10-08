@@ -35,32 +35,32 @@ public class ThriftFieldTest
     private static final Integer THRIFT_FIELD_SQL_SCALE = 12;
     private static final Integer THRIFT_FIELD_SQL_PRECISION = 12;
 
-    private ThriftField thriftField;
-    private ThriftField thriftFieldWithSQL;
-    private ThriftField thriftFieldWithDescription;
-    private ThriftField thriftFieldWithSQLAndDescription;
+    private GoodwillSchemaField goodwillSchemaField;
+    private GoodwillSchemaField goodwillSchemaFieldWithSQL;
+    private GoodwillSchemaField goodwillSchemaFieldWithDescription;
+    private GoodwillSchemaField goodwillSchemaFieldWithSQLAndDescription;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeTest(alwaysRun = true)
     public void setUp()
     {
-        thriftField = new ThriftField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION, null, null, null, null, null);
-        thriftFieldWithSQL = new ThriftField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
+        goodwillSchemaField = new GoodwillSchemaField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION, null, null, null, null, null);
+        goodwillSchemaFieldWithSQL = new GoodwillSchemaField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
             null, THRIFT_FIELD_SQL_TYPE, THRIFT_FIELD_SQL_LENGTH, null, null);
-        thriftFieldWithDescription = new ThriftField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
+        goodwillSchemaFieldWithDescription = new GoodwillSchemaField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
             THRIFT_FIELD_DESCRIPTION, null, null, null, null);
-        thriftFieldWithSQLAndDescription = new ThriftField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
+        goodwillSchemaFieldWithSQLAndDescription = new GoodwillSchemaField(THRIFT_FIELD_NAME, THRIFT_FIELD_TYPE, THRIFT_FIELD_POSITION,
             THRIFT_FIELD_DESCRIPTION, THRIFT_FIELD_SQL_TYPE, THRIFT_FIELD_SQL_LENGTH, THRIFT_FIELD_SQL_SCALE, THRIFT_FIELD_SQL_PRECISION);
     }
 
     @Test
     public void testJSONConstructor() throws Exception
     {
-        thriftField = ThriftField.decode(thriftField.toJSON().toString());
-        thriftFieldWithSQL = ThriftField.decode(thriftFieldWithSQL.toJSON().toString());
-        thriftFieldWithDescription = ThriftField.decode(thriftFieldWithDescription.toJSON().toString());
-        thriftFieldWithSQLAndDescription = ThriftField.decode(thriftFieldWithSQLAndDescription.toJSON().toString());
+        goodwillSchemaField = GoodwillSchemaField.decode(goodwillSchemaField.toJSON().toString());
+        goodwillSchemaFieldWithSQL = GoodwillSchemaField.decode(goodwillSchemaFieldWithSQL.toJSON().toString());
+        goodwillSchemaFieldWithDescription = GoodwillSchemaField.decode(goodwillSchemaFieldWithDescription.toJSON().toString());
+        goodwillSchemaFieldWithSQLAndDescription = GoodwillSchemaField.decode(goodwillSchemaFieldWithSQLAndDescription.toJSON().toString());
 
         runAllAsserts();
     }
@@ -73,15 +73,15 @@ public class ThriftFieldTest
 
     private void runAllAsserts() throws IOException
     {
-        ThriftField field;
-        ThriftField.Sql jsonThriftFieldSQL;
+        GoodwillSchemaField field;
+        GoodwillSchemaField.Sql jsonThriftFieldSQL;
 
-        field = mapper.readValue(new ByteArrayInputStream(thriftField.toJSON().toByteArray()), ThriftField.class);
+        field = mapper.readValue(new ByteArrayInputStream(goodwillSchemaField.toJSON().toByteArray()), GoodwillSchemaField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
         Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
 
-        field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithSQL.toJSON().toByteArray()), ThriftField.class);
+        field = mapper.readValue(new ByteArrayInputStream(goodwillSchemaFieldWithSQL.toJSON().toByteArray()), GoodwillSchemaField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
         Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
@@ -89,13 +89,13 @@ public class ThriftFieldTest
         Assert.assertEquals(jsonThriftFieldSQL.getType(), THRIFT_FIELD_SQL_TYPE);
         Assert.assertEquals((int) jsonThriftFieldSQL.getLength(), (int) THRIFT_FIELD_SQL_LENGTH);
 
-        field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithDescription.toJSON().toByteArray()), ThriftField.class);
+        field = mapper.readValue(new ByteArrayInputStream(goodwillSchemaFieldWithDescription.toJSON().toByteArray()), GoodwillSchemaField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
         Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);
         Assert.assertEquals(field.getDescription(), THRIFT_FIELD_DESCRIPTION);
 
-        field = mapper.readValue(new ByteArrayInputStream(thriftFieldWithSQLAndDescription.toJSON().toByteArray()), ThriftField.class);
+        field = mapper.readValue(new ByteArrayInputStream(goodwillSchemaFieldWithSQLAndDescription.toJSON().toByteArray()), GoodwillSchemaField.class);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
         Assert.assertEquals(field.getId(), (int) THRIFT_FIELD_POSITION);

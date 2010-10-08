@@ -34,7 +34,7 @@ import java.io.IOException;
  *
  * @see com.ning.serialization.SchemaField
  */
-public class ThriftField
+public class GoodwillSchemaField
 {
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -82,7 +82,7 @@ public class ThriftField
      */
     @JsonCreator
     @SuppressWarnings("unused")
-    public ThriftField(
+    public GoodwillSchemaField(
         @JsonProperty(JSON_THRIFT_FIELD_NAME) String name,
         @JsonProperty(JSON_THRIFT_FIELD_TYPE) String type,
         @JsonProperty(JSON_THRIFT_FIELD_ID) short id,
@@ -105,7 +105,7 @@ public class ThriftField
      * @param sqlScale     SQL type scale
      * @param sqlPrecision SQL type precision
      */
-    public ThriftField(
+    public GoodwillSchemaField(
         String name,
         String type,
         short id,
@@ -117,7 +117,7 @@ public class ThriftField
     )
     {
         if (name == null) {
-            throw new IllegalArgumentException("ThriftField name can't be null");
+            throw new IllegalArgumentException("GoodwillSchemaField name can't be null");
         }
 
         if ((sqlType == null || sqlType.equals("string")) && (sqlScale != null || sqlPrecision != null)) {
@@ -131,16 +131,16 @@ public class ThriftField
         this.description = description;
     }
 
-    public ThriftField(SchemaField field)
+    public GoodwillSchemaField(SchemaField field)
     {
         this(field.getName(), field.getType().name(), field.getId(), null, null);
     }
 
-    public static ThriftField decode(
+    public static GoodwillSchemaField decode(
         String thriftItemJson
     ) throws IOException
     {
-        return mapper.readValue(thriftItemJson, ThriftField.class);
+        return mapper.readValue(thriftItemJson, GoodwillSchemaField.class);
     }
 
     @JsonValue
@@ -245,7 +245,7 @@ public class ThriftField
             return toJSON().toString();
         }
         catch (JsonGenerationException e) {
-            return "ThriftField{" +
+            return "GoodwillSchemaField{" +
                 JSON_THRIFT_FIELD_NAME + "='" + getName() + '\'' +
                 ", " + JSON_THRIFT_FIELD_TYPE + "='" + getType() + '\'' +
                 ", " + JSON_THRIFT_FIELD_ID + "=" + getId() +
@@ -257,7 +257,7 @@ public class ThriftField
                 '}';
         }
         catch (IOException e) {
-            return "ThriftField{" +
+            return "GoodwillSchemaField{" +
                 JSON_THRIFT_FIELD_NAME + "='" + getName() + '\'' +
                 ", " + JSON_THRIFT_FIELD_TYPE + "='" + getType() + '\'' +
                 ", " + JSON_THRIFT_FIELD_ID + "=" + getId() +
@@ -271,7 +271,7 @@ public class ThriftField
     }
 
     /**
-     * Create a JSON representation of the ThriftField. It will always contain
+     * Create a JSON representation of the GoodwillSchemaField. It will always contain
      * the name, type and position. Description and SQL attributes are however
      * optional.
      *

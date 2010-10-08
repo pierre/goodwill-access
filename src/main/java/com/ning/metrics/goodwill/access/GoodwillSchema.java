@@ -43,7 +43,7 @@ public class GoodwillSchema
 
     private final String name;
     private String sinkAddInfo;
-    private final HashMap<Short, ThriftField> thriftItems = new HashMap<Short, ThriftField>();
+    private final HashMap<Short, GoodwillSchemaField> thriftItems = new HashMap<Short, GoodwillSchemaField>();
 
     public static final String JSON_THRIFT_TYPE_NAME = "name";
     public static final String JSON_THRIFT_TYPE_SCHEMA = "schema";
@@ -103,7 +103,7 @@ public class GoodwillSchema
     @SuppressWarnings("unused")
     public GoodwillSchema(
         @JsonProperty(JSON_THRIFT_TYPE_NAME) String name,
-        @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<ThriftField> items,
+        @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<GoodwillSchemaField> items,
         @JsonProperty(JSON_THRIFT_TYPE_SINK_ADD_INFO) String sinkAddInfo
     )
     {
@@ -117,10 +117,10 @@ public class GoodwillSchema
      * @param name  Schema name
      * @param items List of fields
      */
-    public GoodwillSchema(String name, List<ThriftField> items)
+    public GoodwillSchema(String name, List<GoodwillSchemaField> items)
     {
         this.name = name;
-        for (ThriftField field : items) {
+        for (GoodwillSchemaField field : items) {
             addThriftField(field);
         }
     }
@@ -146,11 +146,11 @@ public class GoodwillSchema
     /**
      * Add a field in the Thrift. The code does not enforce sanity w.r.t. field positions.
      *
-     * @param thriftField field to add
+     * @param goodwillSchemaField field to add
      */
-    public void addThriftField(ThriftField thriftField)
+    public void addThriftField(GoodwillSchemaField goodwillSchemaField)
     {
-        thriftItems.put(thriftField.getId(), thriftField);
+        thriftItems.put(goodwillSchemaField.getId(), goodwillSchemaField);
     }
 
     public String getName()
@@ -164,14 +164,14 @@ public class GoodwillSchema
      *
      * @return the sorted collection of fields
      */
-    public ArrayList<ThriftField> getSchema()
+    public ArrayList<GoodwillSchemaField> getSchema()
     {
-        ArrayList<ThriftField> items = new ArrayList<ThriftField>(thriftItems.values());
+        ArrayList<GoodwillSchemaField> items = new ArrayList<GoodwillSchemaField>(thriftItems.values());
 
-        Collections.sort(items, new Comparator<ThriftField>()
+        Collections.sort(items, new Comparator<GoodwillSchemaField>()
         {
             @Override
-            public int compare(ThriftField left, ThriftField right)
+            public int compare(GoodwillSchemaField left, GoodwillSchemaField right)
             {
                 return Short.valueOf(left.getId()).compareTo(right.getId());
             }
@@ -190,9 +190,9 @@ public class GoodwillSchema
      * Given a position, return the field at that position.
      *
      * @param i position in the Thrift (start with 1)
-     * @return the ThriftField object
+     * @return the GoodwillSchemaField object
      */
-    public ThriftField getFieldByPosition(short i)
+    public GoodwillSchemaField getFieldByPosition(short i)
     {
         return thriftItems.get(i);
     }
@@ -200,12 +200,12 @@ public class GoodwillSchema
     /**
      * Given a name, return the field matching the name.
      *
-     * @param name ThriftField name
-     * @return the ThriftField object
+     * @param name GoodwillSchemaField name
+     * @return the GoodwillSchemaField object
      */
-    public ThriftField getFieldByName(String name)
+    public GoodwillSchemaField getFieldByName(String name)
     {
-        for (ThriftField field : thriftItems.values()) {
+        for (GoodwillSchemaField field : thriftItems.values()) {
             if (field.getName().equals(name)) {
                 return field;
             }
