@@ -38,7 +38,7 @@ public class ThriftTypeTest
     private static final Integer THRIFT_FIELD_SQL_PRECISION = 4;
 
     private ThriftField thriftFieldWithSQLAndDescription;
-    private ThriftType thriftType;
+    private GoodwillSchema goodwillSchema;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -50,16 +50,16 @@ public class ThriftTypeTest
 
         ArrayList<ThriftField> fields = new ArrayList<ThriftField>();
         fields.add(thriftFieldWithSQLAndDescription);
-        thriftType = new ThriftType(THRIFT_TYPE_NAME, fields);
+        goodwillSchema = new GoodwillSchema(THRIFT_TYPE_NAME, fields);
     }
 
     @Test
     public void testFindByName() throws Exception
     {
-        ThriftField fieldNull = thriftType.getFieldByName("Idontexist");
+        ThriftField fieldNull = goodwillSchema.getFieldByName("Idontexist");
         Assert.assertNull(fieldNull);
 
-        ThriftField field = thriftType.getFieldByName(THRIFT_FIELD_NAME);
+        ThriftField field = goodwillSchema.getFieldByName(THRIFT_FIELD_NAME);
         Assert.assertNotNull(field);
         Assert.assertEquals(field.getName(), THRIFT_FIELD_NAME);
         Assert.assertEquals(field.getType().name(), THRIFT_FIELD_TYPE.toUpperCase());
@@ -75,14 +75,14 @@ public class ThriftTypeTest
     @Test
     public void testToJson() throws Exception
     {
-        thriftType = ThriftType.decode(thriftType.toJSON().toString());
-        runAllAssertions(thriftType);
+        goodwillSchema = GoodwillSchema.decode(goodwillSchema.toJSON().toString());
+        runAllAssertions(goodwillSchema);
 
-        ThriftType type = mapper.readValue(new ByteArrayInputStream(thriftType.toJSON().toByteArray()), ThriftType.class);
+        GoodwillSchema type = mapper.readValue(new ByteArrayInputStream(goodwillSchema.toJSON().toByteArray()), GoodwillSchema.class);
         runAllAssertions(type);
     }
 
-    private void runAllAssertions(ThriftType type) throws IOException
+    private void runAllAssertions(GoodwillSchema type) throws IOException
     {
         Assert.assertEquals(type.getName(), THRIFT_TYPE_NAME);
         Assert.assertEquals(type.getFieldByPosition(THRIFT_FIELD_POSITION).toString(), thriftFieldWithSQLAndDescription.toString());

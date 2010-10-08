@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @see com.ning.serialization.Schema
  */
-public class ThriftType
+public class GoodwillSchema
 {
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -101,7 +101,7 @@ public class ThriftType
      */
     @JsonCreator
     @SuppressWarnings("unused")
-    public ThriftType(
+    public GoodwillSchema(
         @JsonProperty(JSON_THRIFT_TYPE_NAME) String name,
         @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<ThriftField> items,
         @JsonProperty(JSON_THRIFT_TYPE_SINK_ADD_INFO) String sinkAddInfo
@@ -117,7 +117,7 @@ public class ThriftType
      * @param name  Schema name
      * @param items List of fields
      */
-    public ThriftType(String name, List<ThriftField> items)
+    public GoodwillSchema(String name, List<ThriftField> items)
     {
         this.name = name;
         for (ThriftField field : items) {
@@ -125,11 +125,11 @@ public class ThriftType
         }
     }
 
-    public static ThriftType decode(
+    public static GoodwillSchema decode(
         String thriftJson
     ) throws IOException
     {
-        return mapper.readValue(thriftJson, ThriftType.class);
+        return mapper.readValue(thriftJson, GoodwillSchema.class);
     }
 
     @JsonValue
@@ -221,13 +221,13 @@ public class ThriftType
             return toJSON().toString();
         }
         catch (JsonGenerationException e) {
-            return "ThriftType{" +
+            return "GoodwillSchema{" +
                 JSON_THRIFT_TYPE_NAME + "='" + getName() + '\'' +
                 ", thriftItems=" + getSchema() +
                 '}';
         }
         catch (IOException e) {
-            return "ThriftType{" +
+            return "GoodwillSchema{" +
                 JSON_THRIFT_TYPE_NAME + "='" + getName() + '\'' +
                 ", thriftItems=" + getSchema() +
                 '}';

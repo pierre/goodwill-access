@@ -38,7 +38,7 @@ public class GoodwillAccessor
      * <pre>
      * {@code
      * try {
-     * ThriftType type = accessor.getSchemata().get();
+     * GoodwillSchema type = accessor.getSchema("test").get();
      * ...
      * }
      * catch (Exception e) {
@@ -50,13 +50,13 @@ public class GoodwillAccessor
      * @param schemaName schema name to lookup
      * @return a future on the Schema
      */
-    public Future<ThriftType> getSchema(String schemaName)
+    public Future<GoodwillSchema> getSchema(String schemaName)
     {
         try {
-            return client.prepareGet(String.format("%s/%s", url, schemaName)).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<ThriftType>()
+            return client.prepareGet(String.format("%s/%s", url, schemaName)).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<GoodwillSchema>()
             {
                 @Override
-                public ThriftType onCompleted(Response response) throws Exception
+                public GoodwillSchema onCompleted(Response response) throws Exception
                 {
                     if (response.getStatusCode() != 200) {
                         return null;
@@ -65,7 +65,7 @@ public class GoodwillAccessor
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
-                    ThriftType thrift = mapper.readValue(reader, ThriftType.class);
+                    GoodwillSchema thrift = mapper.readValue(reader, GoodwillSchema.class);
 
                     reader.close();
 
@@ -93,13 +93,13 @@ public class GoodwillAccessor
      * @return a future on a list of Schema
      * @see #getSchema for an invocation example
      */
-    public Future<List<ThriftType>> getSchemata()
+    public Future<List<GoodwillSchema>> getSchemata()
     {
         try {
-            return client.prepareGet(url).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<List<ThriftType>>()
+            return client.prepareGet(url).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<List<GoodwillSchema>>()
             {
                 @Override
-                public List<ThriftType> onCompleted(Response response) throws Exception
+                public List<GoodwillSchema> onCompleted(Response response) throws Exception
                 {
                     if (response.getStatusCode() != 200) {
                         return null;
@@ -108,12 +108,12 @@ public class GoodwillAccessor
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
-                    HashMap<String, List<ThriftType>> map = mapper.readValue(reader, HashMap.class);
-                    List<ThriftType> thriftTypes = map.get("types");
+                    HashMap<String, List<GoodwillSchema>> map = mapper.readValue(reader, HashMap.class);
+                    List<GoodwillSchema> goodwillSchemata = map.get("types");
 
                     reader.close();
 
-                    return thriftTypes;
+                    return goodwillSchemata;
                 }
 
                 @Override
