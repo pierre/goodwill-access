@@ -31,6 +31,25 @@ public class GoodwillAccessor
         this.url = String.format("http://%s:%d/registrar", host, port);
     }
 
+    /**
+     * Get the Goodwill schema associated to a schema name.
+     * </p>
+     * Typical invocation:
+     * <pre>
+     * {@code
+     * try {
+     * ThriftType type = accessor.getSchemata().get();
+     * ...
+     * }
+     * catch (Exception e) {
+     * // Connection exception? Goodwill server down?
+     * }
+     * }
+     * </pre>
+     *
+     * @param schemaName schema name to lookup
+     * @return a future on the Schema
+     */
     public Future<ThriftType> getSchema(String schemaName)
     {
         try {
@@ -39,6 +58,10 @@ public class GoodwillAccessor
                 @Override
                 public ThriftType onCompleted(Response response) throws Exception
                 {
+                    if (response.getStatusCode() != 200) {
+                        return null;
+                    }
+
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
@@ -66,6 +89,9 @@ public class GoodwillAccessor
      * Get all schemata.
      * <p/>
      * Use schemata, instead of schemas, which is closer to the original σχήματα.
+     *
+     * @return a future on a list of Schema
+     * @see #getSchema for an invocation example
      */
     public Future<List<ThriftType>> getSchemata()
     {
@@ -75,6 +101,10 @@ public class GoodwillAccessor
                 @Override
                 public List<ThriftType> onCompleted(Response response) throws Exception
                 {
+                    if (response.getStatusCode() != 200) {
+                        return null;
+                    }
+
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
