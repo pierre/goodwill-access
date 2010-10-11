@@ -81,7 +81,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>assemble-metrics-serialization</id>
+                        <id>assemble-metrics-goodwill-access</id>
                         <goals>
                             <goal>shade</goal>
                         </goals>
