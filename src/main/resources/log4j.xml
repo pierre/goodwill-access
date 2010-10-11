@@ -25,7 +25,7 @@
     </appender>
 
     <logger name="com.ning.metrics">
-        <level value="debug"/>
+        <level value="info"/>
     </logger>
     <logger name="org.apache.jasper">
         <level value="info"/>
