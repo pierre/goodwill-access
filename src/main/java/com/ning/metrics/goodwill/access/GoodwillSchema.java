@@ -35,7 +35,7 @@ import java.util.List;
  * Describe a Schema in Goodwill.
  * This is basically a union of a Schema and extra metadata for the Sink.
  *
- * @see com.ning.serialization.Schema
+ * @see com.ning.metrics.serialization.schema.Schema
  */
 public class GoodwillSchema
 {
