@@ -17,8 +17,8 @@
 package com.ning.metrics.goodwill.access;
 
 import com.google.common.collect.ImmutableMap;
-import com.ning.serialization.SchemaField;
-import com.ning.serialization.SchemaFieldType;
+import com.ning.metrics.serialization.schema.SchemaField;
+import com.ning.metrics.serialization.schema.SchemaFieldType;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -32,7 +32,7 @@ import java.io.IOException;
  * Describe a SchemaField in Goodwill.
  * This is basically the union of a SchemaField and extra metadata for the SQL sink.
  *
- * @see com.ning.serialization.SchemaField
+ * @see com.ning.metrics.serialization.schema.SchemaField
  */
 public class GoodwillSchemaField
 {
@@ -100,7 +100,7 @@ public class GoodwillSchemaField
      * @param type         Schema field type. This is not necessarily a Thrift type. @see SchemaFieldType
      * @param id           field position
      * @param description  Short description of the field
-     * @param sqlType      SQL type 9varchar, int, ...)
+     * @param sqlType      SQL type (varchar, int, ...)
      * @param sqlLength    SQL type length
      * @param sqlScale     SQL type scale
      * @param sqlPrecision SQL type precision
