@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>com.ning</groupId>
-            <artifactId>metrics.serialization</artifactId>
+            <artifactId>metrics.serialization-common</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -95,7 +95,7 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <createSourcesJar>false</createSourcesJar>
+                            <createSourcesJar>true</createSourcesJar>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                             <filters>
