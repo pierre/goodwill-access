@@ -19,10 +19,20 @@ public class GoodwillAccessorTest
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
 
         Future<List<GoodwillSchema>> thrifts = accessor.getSchemata();
-        System.out.println(String.format("All thrifts:\n%s", mapper.writeValueAsString(thrifts.get())));
+
+        List<GoodwillSchema> schemata = thrifts.get();
+        // Simple test to make sure we got actual GoodwillSchema, 0.0.5 has the following bug:
+        // java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to com.ning.metrics.goodwill.access.GoodwillSchema
+        Assert.assertTrue(schemata.get(0).getName().length() > 0);
+
+        System.out.println(String.format("All thrifts:\n%s", mapper.writeValueAsString(schemata)));
 
         Future<GoodwillSchema> thrift = accessor.getSchema("Awesomeness");
-        System.out.println(String.format("Awesomeness thrift:\n%s", mapper.writeValueAsString(thrift.get())));
+
+        GoodwillSchema schema = thrift.get();
+        Assert.assertTrue(schema.getName().length() > 0);
+
+        System.out.println(String.format("Awesomeness thrift:\n%s", mapper.writeValueAsString(schema)));
     }
 
     @Test(enabled = true)

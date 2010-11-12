@@ -5,6 +5,7 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -108,7 +109,11 @@ public class GoodwillAccessor
                     BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
                     ObjectMapper mapper = new ObjectMapper();
 
-                    HashMap<String, List<GoodwillSchema>> map = mapper.readValue(reader, HashMap.class);
+                    HashMap<String, List<GoodwillSchema>> map = mapper.readValue(
+                        reader,
+                        new TypeReference<HashMap<String, List<GoodwillSchema>>>()
+                        {
+                        });
                     List<GoodwillSchema> goodwillSchemata = map.get("types");
 
                     reader.close();
