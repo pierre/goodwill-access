@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Goodwill-access">
+    <publishDate position="right"/>
+    <version position="right"/>
+
+    <body>
+        <links>
+            <item name="Maven Central" href="http://repo1.maven.org/maven2/com/ning/"/>
+        </links>
+
+        <menu name="Dwarf">
+            <item name="Dwarf project" href="http://pierre.github.com/dwarf"/>
+            <item name="FAQ" href="/goodwill-access/faq.html"/>
+        </menu>
+
+        <menu ref="reports"/>
+    </body>
+</project>

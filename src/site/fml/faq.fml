@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+      title="Frequently Asked Questions"
+      toplink="false">
+
+    <part id="general">
+        <title>General</title>
+
+        <faq id="how-use-it">
+            <question>
+                How do I use it?
+            </question>
+            <answer>
+                <p>Goodwill-access is synced to <a href="http://repo1.maven.org/maven2/com/ning/metrics.goodwill-access/"
+                                                  target="_blank">Maven Central</a>.
+                    Simply add the dependency to your pom.xml:
+                </p>
+
+                <source><![CDATA[
+    <dependency>
+        <groupId>com.ning</groupId>
+        <artifactId>metrics.goodwill-access</artifactId>
+        <version>0.0.6</version>
+    </dependency>]]></source>
+
+                <p>The library offers both bulk fetch and lookup methods. Here is a complete working example:</p>
+
+                <source><![CDATA[
+    private final GoodwillAccessor goodwillAccessor = new GoodwillAccessor(host, port);
+
+    public Collection<String> getAllSchemataNames()
+    {
+        Collection<String> result = new ArrayList<String>();
+
+        try {
+            List<GoodwillSchema> goodwillSchemata = goodwillAccessor.getSchemata().get();
+            for (GoodwillSchema goodwillSchema : goodwillSchemata) {
+                result.add(goodwillSchema.getName());
+            }
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException("Was interrupted while getting the list of schemata", e);
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException("Problem getting the list of schemata", e);
+        }
+
+        return result;
+    }
+
+    public GoodwillSchema getSchema(String type)
+    {
+        try {
+            return goodwillAccessor.getSchema(type).get();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(String.format("Was interrupted while getting schema: %s", type), e);
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException(String.format("Problem getting schema: %s", type), e);
+        }
+    }]]></source>
+
+                <p>Note that Goodwill-access uses the Async HTTP client, so each method returns a Future on the
+                    requested object. This allows you fine tuning for performance demanding environments.
+                </p>
+            </answer>
+        </faq>
+    </part>
+</faqs>
