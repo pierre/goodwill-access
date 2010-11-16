@@ -239,6 +239,8 @@
                 <version>0.7</version>
                 <configuration>
                     <excludes>
+                        <!-- For some reason, useIdeaDefaultExcludes doesn't pick up .idea directory -->
+                        <exclude>.idea/**</exclude>
                         <exclude>.git/**</exclude>
                         <exclude>.gitignore</exclude>
                         <exclude>deploy.sh</exclude>
@@ -298,6 +300,7 @@
             <id>pierre</id>
             <name>Pierre-Alexandre Meyer</name>
             <email>pierre@mouraf.org</email>
+            <url>http://pub.mouraf.org/blog</url>
             <timezone>-8</timezone>
             <properties>
                 <picUrl>http://pub.mouraf.org/me/me.jpg</picUrl>
