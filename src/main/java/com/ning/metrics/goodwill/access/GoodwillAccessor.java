@@ -18,6 +18,7 @@ package com.ning.metrics.goodwill.access;
 
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Response;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -38,7 +39,7 @@ public class GoodwillAccessor
     private final int port;
     private String url;
 
-    private final AsyncHttpClient client = new AsyncHttpClient();
+    private AsyncHttpClient client;
 
     public GoodwillAccessor(String host, int port)
     {
@@ -46,6 +47,17 @@ public class GoodwillAccessor
         this.port = port;
 
         this.url = String.format("http://%s:%d/registrar", host, port);
+
+        createHttpClient();
+    }
+
+    private void createHttpClient()
+    {
+        // Don't limit the number of connections per host
+        // See https://github.com/ning/async-http-client/issues/issue/28
+        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        builder.setMaximumConnectionsPerHost(-1);
+        client = new AsyncHttpClient(builder.build());
     }
 
     /**
@@ -97,7 +109,7 @@ public class GoodwillAccessor
             });
         }
         catch (IOException e) {
-            log.warn(String.format("Error getting Schema list from %s:%d", host, port));
+            log.warn(String.format("Error getting Schema list from %s:%d (%s)", host, port, e.getLocalizedMessage()));
             return null;
         }
     }
@@ -145,7 +157,7 @@ public class GoodwillAccessor
             });
         }
         catch (IOException e) {
-            log.warn(String.format("Error getting Schema list from %s:%d", host, port));
+            log.warn(String.format("Error getting Schema list from %s:%d (%s)", host, port, e.getLocalizedMessage()));
             return null;
         }
     }
