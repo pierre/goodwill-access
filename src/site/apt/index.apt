@@ -2,8 +2,8 @@ Welcome to the Goodwill-access library
 
 * Overview
 
-    Goodwill-access is a Java library to access Schemata stored in {{{/goodwill}Goodwill}}.
-    See the {{{/goodwill-access/faq.html}FAQ}} to get started.
+    Goodwill-access is a Java library to access Schemata stored in {{{/dwarf/goodwill}Goodwill}}.
+    See the {{{/dwarf/goodwill-access/faq.html}FAQ}} to get started.
 
 
 * Why would I use it?
