@@ -100,7 +100,6 @@ public class GoodwillSchema
      * @param sinkAddInfo extra information for the Sink
      */
     @JsonCreator
-    @SuppressWarnings("unused")
     public GoodwillSchema(
         @JsonProperty(JSON_THRIFT_TYPE_NAME) String name,
         @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<GoodwillSchemaField> items,
@@ -133,7 +132,7 @@ public class GoodwillSchema
     }
 
     @JsonValue
-    @SuppressWarnings({"unchecked", "unused"})
+    @SuppressWarnings({"unchecked"})
     public ImmutableMap toMap()
     {
         return new ImmutableMap.Builder()
@@ -180,7 +179,6 @@ public class GoodwillSchema
         return items;
     }
 
-    @SuppressWarnings("unused")
     public void setSinkAddInfo(String sinkAddInfo)
     {
         this.sinkAddInfo = sinkAddInfo;
@@ -218,7 +216,7 @@ public class GoodwillSchema
     public String toString()
     {
         try {
-            return toJSON().toString();
+            return mapper.writeValueAsString(this);
         }
         catch (JsonGenerationException e) {
             return "GoodwillSchema{" +
@@ -234,10 +232,21 @@ public class GoodwillSchema
         }
     }
 
+    public byte[] toJSONBytes() throws IOException
+    {
+        return mapper.writeValueAsBytes(this);
+    }
+    
+    /**
+     * @deprecated Use 'toJSONBytes()' instead
+     */
+    @Deprecated
     public ByteArrayOutputStream toJSON() throws IOException
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        mapper.writeValue(out, this);
+        // silly, but 
+        byte[] bytes = toJSONBytes();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(bytes.length);
+        out.write(bytes);
         return out;
     }
 }

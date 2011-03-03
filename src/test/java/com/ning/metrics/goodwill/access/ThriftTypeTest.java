@@ -21,7 +21,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -75,10 +74,11 @@ public class ThriftTypeTest
     @Test
     public void testToJson() throws Exception
     {
-        goodwillSchema = GoodwillSchema.decode(goodwillSchema.toJSON().toString());
+        goodwillSchema = GoodwillSchema.decode(goodwillSchema.toString());
         runAllAssertions(goodwillSchema);
 
-        GoodwillSchema type = mapper.readValue(new ByteArrayInputStream(goodwillSchema.toJSON().toByteArray()), GoodwillSchema.class);
+        byte[] json = goodwillSchema.toJSONBytes();
+        GoodwillSchema type = mapper.readValue(json, 0, json.length, GoodwillSchema.class);
         runAllAssertions(type);
     }
 
