@@ -9,7 +9,7 @@
     <groupId>com.ning</groupId>
     <artifactId>metrics.goodwill-access</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.10</version>
+    <version>0.0.11-SNAPSHOT</version>
     <name>goodwill-access</name>
     <description>Access library for Goodwill</description>
     <url>http://github.com/pierre/goodwill-access</url>
