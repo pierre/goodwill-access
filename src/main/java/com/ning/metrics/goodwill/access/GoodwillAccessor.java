@@ -24,9 +24,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -35,11 +34,14 @@ public class GoodwillAccessor
 {
     private static final Logger log = Logger.getLogger(GoodwillAccessor.class);
 
+    private final static ObjectMapper mapper = new ObjectMapper();
+
+    private final AsyncHttpClient client;
+    
     private final String host;
     private final int port;
     private String url;
 
-    private AsyncHttpClient client;
 
     public GoodwillAccessor(String host, int port)
     {
@@ -48,16 +50,17 @@ public class GoodwillAccessor
 
         this.url = String.format("http://%s:%d/registrar", host, port);
 
-        createHttpClient();
+        client = createHttpClient();
     }
 
-    private void createHttpClient()
+    // note: if called from base-class constructor, couldn't sub-class; hence just make static
+    private static AsyncHttpClient createHttpClient()
     {
         // Don't limit the number of connections per host
         // See https://github.com/ning/async-http-client/issues/issue/28
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
         builder.setMaximumConnectionsPerHost(-1);
-        client = new AsyncHttpClient(builder.build());
+        return new AsyncHttpClient(builder.build());
     }
 
     /**
@@ -65,14 +68,12 @@ public class GoodwillAccessor
      * </p>
      * Typical invocation:
      * <pre>
-     * {@code
      * try {
-     * GoodwillSchema type = accessor.getSchema("test").get();
+     *   GoodwillSchema type = accessor.getSchema("test").get();
      * ...
      * }
      * catch (Exception e) {
-     * // Connection exception? Goodwill server down?
-     * }
+     *   // Connection exception? Goodwill server down?
      * }
      * </pre>
      *
@@ -91,14 +92,12 @@ public class GoodwillAccessor
                         return null;
                     }
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
-                    ObjectMapper mapper = new ObjectMapper();
-
-                    GoodwillSchema thrift = mapper.readValue(reader, GoodwillSchema.class);
-
-                    reader.close();
-
-                    return thrift;
+                    InputStream in = response.getResponseBodyAsStream();
+                    try {
+                        return mapper.readValue(in, GoodwillSchema.class);
+                    } finally {
+                        closeStream(in);
+                    }
                 }
 
                 @Override
@@ -134,19 +133,15 @@ public class GoodwillAccessor
                         return null;
                     }
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getResponseBodyAsStream()));
-                    ObjectMapper mapper = new ObjectMapper();
-
-                    HashMap<String, List<GoodwillSchema>> map = mapper.readValue(
-                        reader,
-                        new TypeReference<HashMap<String, List<GoodwillSchema>>>()
-                        {
-                        });
-                    List<GoodwillSchema> goodwillSchemata = map.get("types");
-
-                    reader.close();
-
-                    return goodwillSchemata;
+                    InputStream in = response.getResponseBodyAsStream();
+                    try {
+                        HashMap<String, List<GoodwillSchema>> map = mapper.readValue(in,
+                            new TypeReference<HashMap<String, List<GoodwillSchema>>>() { });
+                        List<GoodwillSchema> goodwillSchemata = map.get("types");
+                        return goodwillSchemata;
+                    } finally {
+                        closeStream(in);
+                    }
                 }
 
                 @Override
@@ -159,6 +154,17 @@ public class GoodwillAccessor
         catch (IOException e) {
             log.warn(String.format("Error getting Schema list from %s:%d (%s)", host, port, e.getLocalizedMessage()));
             return null;
+        }
+    }
+
+    private final void closeStream(InputStream in)
+    {
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                log.warn(String.format("Failed to close http-client - provided InputStream: %s", e.getLocalizedMessage()));
+            }
         }
     }
 }
