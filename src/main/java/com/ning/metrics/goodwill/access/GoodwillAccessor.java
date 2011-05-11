@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Ning, Inc.
+ * Copyright 2010-2011 Ning, Inc.
  *
  * Ning licenses this file to you under the Apache License, version 2.0
  * (the "License"); you may not use this file except in compliance with the
@@ -20,7 +20,6 @@ import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Response;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -30,45 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
 
-public class GoodwillAccessor
+public class GoodwillAccessor extends Accessor
 {
-    private static final Logger log = Logger.getLogger(GoodwillAccessor.class);
-
-    private final static ObjectMapper mapper = new ObjectMapper();
-
-    private final AsyncHttpClient client;
-
-    private final String host;
-    private final int port;
-    private String url;
-
+    protected final static ObjectMapper mapper = new ObjectMapper();
+    protected AsyncHttpClient client;
 
     public GoodwillAccessor(String host, int port)
     {
-        this.host = host;
-        this.port = port;
-
-        this.url = String.format("http://%s:%d/registrar", host, port);
-
+        super(host, port);
         client = createHttpClient();
-    }
-
-    // note: if called from base-class constructor, couldn't sub-class; hence just make static
-    private static AsyncHttpClient createHttpClient()
-    {
-        // Don't limit the number of connections per host
-        // See https://github.com/ning/async-http-client/issues/issue/28
-        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
-        builder.setMaximumConnectionsPerHost(-1);
-        return new AsyncHttpClient(builder.build());
-    }
-
-    /**
-     * Close the underlying http client
-     */
-    public synchronized void close()
-    {
-        client.close();
     }
 
     /**
@@ -148,8 +117,7 @@ public class GoodwillAccessor
                             new TypeReference<HashMap<String, List<GoodwillSchema>>>()
                             {
                             });
-                        List<GoodwillSchema> goodwillSchemata = map.get("types");
-                        return goodwillSchemata;
+                        return map.get("types");
                     }
                     finally {
                         closeStream(in);
@@ -169,7 +137,25 @@ public class GoodwillAccessor
         }
     }
 
-    private final void closeStream(InputStream in)
+    // note: if called from base-class constructor, couldn't sub-class; hence just make static
+    private static AsyncHttpClient createHttpClient()
+    {
+        // Don't limit the number of connections per host
+        // See https://github.com/ning/async-http-client/issues/issue/28
+        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        builder.setMaximumConnectionsPerHost(-1);
+        return new AsyncHttpClient(builder.build());
+    }
+
+    /**
+     * Close the underlying http client
+     */
+    public synchronized void close()
+    {
+        client.close();
+    }
+
+    protected final void closeStream(InputStream in)
     {
         if (in != null) {
             try {

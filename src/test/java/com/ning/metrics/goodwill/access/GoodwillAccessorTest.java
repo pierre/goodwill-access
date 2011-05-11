@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Ning, Inc.
+ * Copyright 2010-2011 Ning, Inc.
  *
  * Ning licenses this file to you under the Apache License, version 2.0
  * (the "License"); you may not use this file except in compliance with the
@@ -26,8 +26,8 @@ import java.util.concurrent.Future;
 
 public class GoodwillAccessorTest
 {
-    @Test(enabled = false)
-    public void testGetSchema() throws Exception
+    @Test(enabled = false, groups = "slow")
+    public void testIntegration() throws Exception
     {
         GoodwillAccessor accessor = new GoodwillAccessor("localhost", 8080);
 
@@ -49,9 +49,11 @@ public class GoodwillAccessorTest
         Assert.assertTrue(schema.getName().length() > 0);
 
         System.out.println(String.format("Awesomeness thrift:\n%s", mapper.writeValueAsString(schema)));
+
+        accessor.close();
     }
 
-    @Test(enabled = true)
+    @Test(groups = "fast")
     public void testNullSchema() throws Exception
     {
         GoodwillAccessor accessor = new GoodwillAccessor("unexistent", 8080);
@@ -63,5 +65,7 @@ public class GoodwillAccessorTest
         catch (Exception e) {
             Assert.assertTrue(true);
         }
+
+        accessor.close();
     }
 }
