@@ -64,6 +64,14 @@ public class GoodwillAccessor
     }
 
     /**
+     * Close the underlying http client
+     */
+    public synchronized void close()
+    {
+        client.close();
+    }
+
+    /**
      * Get the Goodwill schema associated to a schema name.
      * </p>
      * Typical invocation:
