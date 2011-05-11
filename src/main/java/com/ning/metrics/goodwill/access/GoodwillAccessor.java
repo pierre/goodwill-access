@@ -37,7 +37,7 @@ public class GoodwillAccessor
     private final static ObjectMapper mapper = new ObjectMapper();
 
     private final AsyncHttpClient client;
-    
+
     private final String host;
     private final int port;
     private String url;
@@ -95,7 +95,8 @@ public class GoodwillAccessor
                     InputStream in = response.getResponseBodyAsStream();
                     try {
                         return mapper.readValue(in, GoodwillSchema.class);
-                    } finally {
+                    }
+                    finally {
                         closeStream(in);
                     }
                 }
@@ -119,7 +120,7 @@ public class GoodwillAccessor
      * Use schemata, instead of schemas, which is closer to the original σχήματα.
      *
      * @return a future on a list of Schema
-     * @see #getSchema for an invocation example
+     * @see #getSchema(String) for an invocation example
      */
     public Future<List<GoodwillSchema>> getSchemata()
     {
@@ -136,10 +137,13 @@ public class GoodwillAccessor
                     InputStream in = response.getResponseBodyAsStream();
                     try {
                         HashMap<String, List<GoodwillSchema>> map = mapper.readValue(in,
-                            new TypeReference<HashMap<String, List<GoodwillSchema>>>() { });
+                            new TypeReference<HashMap<String, List<GoodwillSchema>>>()
+                            {
+                            });
                         List<GoodwillSchema> goodwillSchemata = map.get("types");
                         return goodwillSchemata;
-                    } finally {
+                    }
+                    finally {
                         closeStream(in);
                     }
                 }
@@ -162,7 +166,8 @@ public class GoodwillAccessor
         if (in != null) {
             try {
                 in.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 log.warn(String.format("Failed to close http-client - provided InputStream: %s", e.getLocalizedMessage()));
             }
         }
