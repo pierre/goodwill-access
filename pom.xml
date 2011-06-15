@@ -140,6 +140,16 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <!-- For some reason, useIdeaDefaultExcludes doesn't pick up .idea directory -->
+                                <exclude>.idea/**</exclude>
+                                <exclude>.git/**</exclude>
+                                <exclude>.gitignore</exclude>
+                                <exclude>deploy.sh</exclude>
+                                <exclude>src/site/**</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -263,16 +273,6 @@
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <version>0.7</version>
-                <configuration>
-                    <excludes>
-                        <!-- For some reason, useIdeaDefaultExcludes doesn't pick up .idea directory -->
-                        <exclude>.idea/**</exclude>
-                        <exclude>.git/**</exclude>
-                        <exclude>.gitignore</exclude>
-                        <exclude>deploy.sh</exclude>
-                        <exclude>src/site/**</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
