@@ -101,9 +101,9 @@ public class GoodwillSchema
      */
     @JsonCreator
     public GoodwillSchema(
-        @JsonProperty(JSON_THRIFT_TYPE_NAME) String name,
-        @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) List<GoodwillSchemaField> items,
-        @JsonProperty(JSON_THRIFT_TYPE_SINK_ADD_INFO) String sinkAddInfo
+        @JsonProperty(JSON_THRIFT_TYPE_NAME) final String name,
+        @JsonProperty(JSON_THRIFT_TYPE_SCHEMA) final List<GoodwillSchemaField> items,
+        @JsonProperty(JSON_THRIFT_TYPE_SINK_ADD_INFO) final String sinkAddInfo
     )
     {
         this(name, items);
@@ -116,17 +116,15 @@ public class GoodwillSchema
      * @param name  Schema name
      * @param items List of fields
      */
-    public GoodwillSchema(String name, List<GoodwillSchemaField> items)
+    public GoodwillSchema(final String name, final List<GoodwillSchemaField> items)
     {
         this.name = name;
-        for (GoodwillSchemaField field : items) {
+        for (final GoodwillSchemaField field : items) {
             addThriftField(field);
         }
     }
 
-    public static GoodwillSchema decode(
-        String thriftJson
-    ) throws IOException
+    public static GoodwillSchema decode(final String thriftJson) throws IOException
     {
         return mapper.readValue(thriftJson, GoodwillSchema.class);
     }
@@ -147,7 +145,7 @@ public class GoodwillSchema
      *
      * @param goodwillSchemaField field to add
      */
-    public void addThriftField(GoodwillSchemaField goodwillSchemaField)
+    public void addThriftField(final GoodwillSchemaField goodwillSchemaField)
     {
         thriftItems.put(goodwillSchemaField.getId(), goodwillSchemaField);
     }
@@ -165,12 +163,12 @@ public class GoodwillSchema
      */
     public ArrayList<GoodwillSchemaField> getSchema()
     {
-        ArrayList<GoodwillSchemaField> items = new ArrayList<GoodwillSchemaField>(thriftItems.values());
+        final ArrayList<GoodwillSchemaField> items = new ArrayList<GoodwillSchemaField>(thriftItems.values());
 
         Collections.sort(items, new Comparator<GoodwillSchemaField>()
         {
             @Override
-            public int compare(GoodwillSchemaField left, GoodwillSchemaField right)
+            public int compare(final GoodwillSchemaField left, final GoodwillSchemaField right)
             {
                 return Short.valueOf(left.getId()).compareTo(right.getId());
             }
@@ -179,7 +177,7 @@ public class GoodwillSchema
         return items;
     }
 
-    public void setSinkAddInfo(String sinkAddInfo)
+    public void setSinkAddInfo(final String sinkAddInfo)
     {
         this.sinkAddInfo = sinkAddInfo;
     }
@@ -190,7 +188,7 @@ public class GoodwillSchema
      * @param i position in the Thrift (start with 1)
      * @return the GoodwillSchemaField object
      */
-    public GoodwillSchemaField getFieldByPosition(short i)
+    public GoodwillSchemaField getFieldByPosition(final short i)
     {
         return thriftItems.get(i);
     }
@@ -201,9 +199,9 @@ public class GoodwillSchema
      * @param name GoodwillSchemaField name
      * @return the GoodwillSchemaField object
      */
-    public GoodwillSchemaField getFieldByName(String name)
+    public GoodwillSchemaField getFieldByName(final String name)
     {
-        for (GoodwillSchemaField field : thriftItems.values()) {
+        for (final GoodwillSchemaField field : thriftItems.values()) {
             if (field.getName().equals(name)) {
                 return field;
             }
@@ -244,8 +242,8 @@ public class GoodwillSchema
     public ByteArrayOutputStream toJSON() throws IOException
     {
         // silly, but 
-        byte[] bytes = toJSONBytes();
-        ByteArrayOutputStream out = new ByteArrayOutputStream(bytes.length);
+        final byte[] bytes = toJSONBytes();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream(bytes.length);
         out.write(bytes);
         return out;
     }

@@ -83,11 +83,11 @@ public class GoodwillSchemaField
     @JsonCreator
     @SuppressWarnings("unused")
     public GoodwillSchemaField(
-        @JsonProperty(JSON_THRIFT_FIELD_NAME) String name,
-        @JsonProperty(JSON_THRIFT_FIELD_TYPE) String type,
-        @JsonProperty(JSON_THRIFT_FIELD_ID) short id,
-        @JsonProperty(JSON_THRIFT_FIELD_DESCRIPTION) String description,
-        @JsonProperty(JSON_THRIFT_FIELD_SQL_KEY) Sql sql
+        @JsonProperty(JSON_THRIFT_FIELD_NAME) final String name,
+        @JsonProperty(JSON_THRIFT_FIELD_TYPE) final String type,
+        @JsonProperty(JSON_THRIFT_FIELD_ID) final short id,
+        @JsonProperty(JSON_THRIFT_FIELD_DESCRIPTION) final String description,
+        @JsonProperty(JSON_THRIFT_FIELD_SQL_KEY) final Sql sql
     )
     {
         this(name, type, id, description, sql == null ? null : sql.getType(), sql == null ? null : sql.getLength(), sql == null ? null : sql.getScale(), sql == null ? null : sql.getPrecision());
@@ -106,14 +106,14 @@ public class GoodwillSchemaField
      * @param sqlPrecision SQL type precision
      */
     public GoodwillSchemaField(
-        String name,
-        String type,
-        short id,
-        String description,
-        String sqlType,
-        Integer sqlLength,
-        Integer sqlScale,
-        Integer sqlPrecision
+        final String name,
+        final String type,
+        final short id,
+        final String description,
+        final String sqlType,
+        final Integer sqlLength,
+        final Integer sqlScale,
+        final Integer sqlPrecision
     )
     {
         if (name == null) {
@@ -131,14 +131,12 @@ public class GoodwillSchemaField
         this.description = description;
     }
 
-    public GoodwillSchemaField(SchemaField field)
+    public GoodwillSchemaField(final SchemaField field)
     {
         this(field.getName(), field.getType().name(), field.getId(), null, null);
     }
 
-    public static GoodwillSchemaField decode(
-        String thriftItemJson
-    ) throws IOException
+    public static GoodwillSchemaField decode(final String thriftItemJson) throws IOException
     {
         return mapper.readValue(thriftItemJson, GoodwillSchemaField.class);
     }
@@ -161,17 +159,17 @@ public class GoodwillSchemaField
      */
     public static class Sql
     {
-        private String type;
-        private Integer length;
-        private Integer scale;
-        private Integer precision;
+        private final String type;
+        private final Integer length;
+        private final Integer scale;
+        private final Integer precision;
 
         @JsonCreator
         public Sql(
-            @JsonProperty(JSON_THRIFT_FIELD_SQL_TYPE) String type,
-            @JsonProperty(JSON_THRIFT_FIELD_SQL_LENGTH) Integer length,
-            @JsonProperty(JSON_THRIFT_FIELD_SQL_SCALE) Integer scale,
-            @JsonProperty(JSON_THRIFT_FIELD_SQL_PRECISION) Integer precision)
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_TYPE) final String type,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_LENGTH) final Integer length,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_SCALE) final Integer scale,
+            @JsonProperty(JSON_THRIFT_FIELD_SQL_PRECISION) final Integer precision)
         {
             this.type = type;
             this.length = length;
@@ -281,7 +279,7 @@ public class GoodwillSchemaField
      */
     public ByteArrayOutputStream toJSON() throws IOException
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         mapper.writeValue(out, this);
         return out;
     }
@@ -300,7 +298,7 @@ public class GoodwillSchemaField
         if (sql.type == null) {
             return null;
         }
-        else if ((sql.type.equals("decimal")) || sql.type.equals("numeric")) {
+        else if (sql.type.equals("decimal") || sql.type.equals("numeric")) {
             if (sql.precision != null) {
                 if (sql.scale != null) {
                     fullSQLType = sql.type + "(" + sql.precision + ", " + sql.scale + ")";

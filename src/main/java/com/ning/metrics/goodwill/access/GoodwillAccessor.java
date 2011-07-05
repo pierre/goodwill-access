@@ -31,10 +31,10 @@ import java.util.concurrent.Future;
 
 public class GoodwillAccessor extends Accessor
 {
-    protected final static ObjectMapper mapper = new ObjectMapper();
+    protected static final ObjectMapper mapper = new ObjectMapper();
     protected AsyncHttpClient client;
 
-    public GoodwillAccessor(String host, int port)
+    public GoodwillAccessor(final String host, final int port)
     {
         super(host, port);
         client = createHttpClient();
@@ -105,7 +105,7 @@ public class GoodwillAccessor extends Accessor
             return client.prepareGet(url).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<List<GoodwillSchema>>()
             {
                 @Override
-                public List<GoodwillSchema> onCompleted(Response response) throws Exception
+                public List<GoodwillSchema> onCompleted(final Response response) throws Exception
                 {
                     if (response.getStatusCode() != 200) {
                         return null;
@@ -113,7 +113,7 @@ public class GoodwillAccessor extends Accessor
 
                     InputStream in = response.getResponseBodyAsStream();
                     try {
-                        HashMap<String, List<GoodwillSchema>> map = mapper.readValue(in,
+                        final HashMap<String, List<GoodwillSchema>> map = mapper.readValue(in,
                             new TypeReference<HashMap<String, List<GoodwillSchema>>>()
                             {
                             });
@@ -142,7 +142,7 @@ public class GoodwillAccessor extends Accessor
     {
         // Don't limit the number of connections per host
         // See https://github.com/ning/async-http-client/issues/issue/28
-        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        final AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
         builder.setMaximumConnectionsPerHost(-1);
         return new AsyncHttpClient(builder.build());
     }
@@ -155,7 +155,7 @@ public class GoodwillAccessor extends Accessor
         client.close();
     }
 
-    protected final void closeStream(InputStream in)
+    protected final void closeStream(final InputStream in)
     {
         if (in != null) {
             try {

@@ -18,6 +18,7 @@ package com.ning.metrics.goodwill.access;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -31,12 +32,12 @@ public class CachingGoodwillAccessor extends Accessor
     private final ConcurrentHashMap<String, GoodwillSchema> knownSchemata = new ConcurrentHashMap<String, GoodwillSchema>();
     private final GoodwillAccessor delegate;
 
-    public CachingGoodwillAccessor(String host, int port)
+    public CachingGoodwillAccessor(final String host, final int port)
     {
         this(host, port, DEFAULT_CACHE_TIMEOUT_IN_SECONDS);
     }
 
-    public CachingGoodwillAccessor(String host, int port, int cacheTimeoutInSeconds)
+    public CachingGoodwillAccessor(final String host, final int port, final int cacheTimeoutInSeconds)
     {
         super(host, port);
 
@@ -60,15 +61,15 @@ public class CachingGoodwillAccessor extends Accessor
     public void refreshSchemataCache()
     {
         try {
-            List<GoodwillSchema> schemata = delegate.getSchemata().get();
+            final List<GoodwillSchema> schemata = delegate.getSchemata().get();
 
             // If Goodwill is down - keep the old cache around
             if (schemata == null) {
                 return;
             }
 
-            ConcurrentHashMap<String, GoodwillSchema> newSchemataCache = new ConcurrentHashMap<String, GoodwillSchema>();
-            for (GoodwillSchema schema : schemata) {
+            final Map<String,GoodwillSchema> newSchemataCache = new ConcurrentHashMap<String, GoodwillSchema>();
+            for (final GoodwillSchema schema : schemata) {
                 newSchemataCache.put(schema.getName(), schema);
             }
 
@@ -93,7 +94,7 @@ public class CachingGoodwillAccessor extends Accessor
      * @param schemaName name of the schema to find
      * @return GoodwillSchema describing the schema
      */
-    public GoodwillSchema getSchema(String schemaName)
+    public GoodwillSchema getSchema(final String schemaName)
     {
         GoodwillSchema schema = knownSchemata.get(schemaName);
         if (schema == null) {

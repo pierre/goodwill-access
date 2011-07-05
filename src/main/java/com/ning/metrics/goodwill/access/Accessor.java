@@ -26,7 +26,7 @@ abstract class Accessor
     protected final int port;
     protected String url;
 
-    Accessor(String host, int port)
+    Accessor(final String host, final int port)
     {
         this.port = port;
         this.host = host;
