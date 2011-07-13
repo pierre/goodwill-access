@@ -16,12 +16,13 @@
 
 package com.ning.metrics.goodwill.access;
 
+import com.mogwee.executors.Executors;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CachingGoodwillAccessor extends Accessor
@@ -43,7 +44,7 @@ public class CachingGoodwillAccessor extends Accessor
 
         delegate = new GoodwillAccessor(host, port);
 
-        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(new Runnable()
+        Executors.newScheduledThreadPool(1, "GoodwillCacheRefresher").scheduleWithFixedDelay(new Runnable()
         {
             @Override
             public void run()

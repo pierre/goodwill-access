@@ -57,19 +57,19 @@ public class GoodwillAccessor extends Accessor
      * @param schemaName schema name to lookup
      * @return a future on the Schema
      */
-    public Future<GoodwillSchema> getSchema(String schemaName)
+    public Future<GoodwillSchema> getSchema(final String schemaName)
     {
         try {
             return client.prepareGet(String.format("%s/%s", url, schemaName)).addHeader("Accept", "application/json").execute(new AsyncCompletionHandler<GoodwillSchema>()
             {
                 @Override
-                public GoodwillSchema onCompleted(Response response) throws Exception
+                public GoodwillSchema onCompleted(final Response response) throws Exception
                 {
                     if (response.getStatusCode() != 200) {
                         return null;
                     }
 
-                    InputStream in = response.getResponseBodyAsStream();
+                    final InputStream in = response.getResponseBodyAsStream();
                     try {
                         return mapper.readValue(in, GoodwillSchema.class);
                     }
@@ -79,7 +79,7 @@ public class GoodwillAccessor extends Accessor
                 }
 
                 @Override
-                public void onThrowable(Throwable t)
+                public void onThrowable(final Throwable t)
                 {
                     log.warn(t);
                 }
@@ -125,7 +125,7 @@ public class GoodwillAccessor extends Accessor
                 }
 
                 @Override
-                public void onThrowable(Throwable t)
+                public void onThrowable(final Throwable t)
                 {
                     log.warn(t);
                 }
