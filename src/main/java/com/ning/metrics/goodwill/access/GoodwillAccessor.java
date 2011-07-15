@@ -81,12 +81,12 @@ public class GoodwillAccessor extends Accessor
                 @Override
                 public void onThrowable(final Throwable t)
                 {
-                    log.warn(t);
+                    log.warn("Got exception looking up the schema", t);
                 }
             });
         }
         catch (IOException e) {
-            log.warn(String.format("Error getting Schema list from %s:%d (%s)", host, port, e.getLocalizedMessage()));
+            log.warn("Got exception looking up the schema", e);
             return null;
         }
     }
@@ -127,12 +127,12 @@ public class GoodwillAccessor extends Accessor
                 @Override
                 public void onThrowable(final Throwable t)
                 {
-                    log.warn(t);
+                    log.warn("Got exception looking up the schema list", t);
                 }
             });
         }
         catch (IOException e) {
-            log.warn(String.format("Error getting Schema list from %s:%d (%s)", host, port, e.getLocalizedMessage()));
+            log.warn("Got exception looking up the schema list", e);
             return null;
         }
     }
@@ -162,7 +162,7 @@ public class GoodwillAccessor extends Accessor
                 in.close();
             }
             catch (IOException e) {
-                log.warn(String.format("Failed to close http-client - provided InputStream: %s", e.getLocalizedMessage()));
+                log.warn("Failed to close http-client - provided InputStream: {}", e.getLocalizedMessage());
             }
         }
     }

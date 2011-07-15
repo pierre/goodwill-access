@@ -84,7 +84,7 @@ public class CachingGoodwillAccessor extends Accessor
             Thread.currentThread().interrupt();
         }
         catch (ExecutionException e) {
-            log.warn(String.format("Unable to refresh schemata cache: %s", e.getLocalizedMessage()));
+            log.warn("Unable to refresh schemata cache: {}", e.getLocalizedMessage());
         }
     }
 

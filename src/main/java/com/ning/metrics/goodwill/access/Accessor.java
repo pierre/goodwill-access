@@ -16,11 +16,12 @@
 
 package com.ning.metrics.goodwill.access;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class Accessor
 {
-    protected static final Logger log = Logger.getLogger(Accessor.class);
+    protected static final Logger log = LoggerFactory.getLogger(Accessor.class);
 
     protected final String host;
     protected final int port;
