@@ -201,6 +201,8 @@
                                 <exclude>.idea/**</exclude>
                                 <exclude>.git/**</exclude>
                                 <exclude>.gitignore</exclude>
+                                <exclude>release-script</exclude>
+                                <exclude>doc/**</exclude>
                                 <exclude>deploy.sh</exclude>
                                 <exclude>src/site/**</exclude>
                             </excludes>
