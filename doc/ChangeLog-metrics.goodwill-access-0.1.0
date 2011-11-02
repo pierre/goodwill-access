@@ -1,0 +1,64 @@
+commit 6fa9683904facead40245ff644b7e7047c59cc0f
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Mon May 16 11:32:52 2011 -0700
+
+    [maven-release-plugin] prepare release metrics.goodwill-access-0.1.0
+
+commit 700342d7188c03b30493ef9f5eea26562fdd1e02
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Mon May 16 11:31:36 2011 -0700
+
+    pom.xml: revert serialization-common to 1.0.6
+    
+    We need to release 2.0.0 first.
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit adcbdf94a5ecae3f0d5f1669e7cc9315cbfb6a57
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Wed May 11 13:50:29 2011 -0700
+
+    client: add CachingGoodwillAccessor client
+    
+    The CachingGoodwillAccessor will cache the schemata in memory and update
+    it on a fix delay.
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit 8ef220c44b3d82f2424d056926bdf8b544b82e78
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Wed May 11 07:19:35 2011 -0700
+
+    api: add close() method
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit 130bcc7a8f09e939c518553c75ee97eb0d58d8c7
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Wed May 11 07:17:40 2011 -0700
+
+    minor: fix Javadoc warning
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit 6b8d5383b9731a40a3f4bb352846690f77603bfc
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Tue May 10 10:44:55 2011 -0700
+
+    pom.xml: update to serialization-common 2.0.0-SNAPSHOT
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit f7f3d6db582e403e589dd0c491c56c4290ac1680
+Author: Pierre-Alexandre Meyer <pierre@ning.com>
+Date:   Tue May 10 10:30:31 2011 -0700
+
+    pom.xml: bump jackson to 1.8.0
+    
+    Signed-off-by: Pierre-Alexandre Meyer <pierre@ning.com>
+
+commit fdf8ec2fa52d88adc1085e5fd3f3fe101205e202
+Author: Tatu <tatu@ning.com>
+Date:   Fri Mar 4 12:57:23 2011 -0800
+
+    [maven-release-plugin] prepare for next development iteration

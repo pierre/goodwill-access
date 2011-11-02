@@ -1,0 +1,19 @@
+Welcome to the Goodwill-access library
+
+* Overview
+
+    Goodwill-access is a Java library to access Schemata stored in {{{/dwarf/goodwill}Goodwill}}.
+    See the {{{/dwarf/goodwill-access/faq.html}FAQ}} to get started.
+
+
+* Why would I use it?
+
+    Let's say you store in HDFS data serialized using the Thrift protocol and you want to dynamically
+    export this data into a Data Warehouse. This can be a tricky process. For instance, what SQL type maps to an i64?
+    bigint, timestamp and date are valid candidates. How would you choose?
+
+    After documenting your Schema in Goodwill, you could write an import process that fetches the raw data from Hadoop,
+    query Goodwill for the Thrift schema and metadata associated, deserialize and transform the Thrift according to it
+    and insert it into the Data Warehouse via a JDBC driver:
+
+[images/example_usage.png] Import process from HDFS into a Data Warehouse
