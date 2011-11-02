@@ -1,7 +1,0 @@
-Pierre-Alexandre Meyer (1):
-      [maven-release-plugin] prepare for next development iteration
-
-Tatu (2):
-      Updating dependencies; simplifying json bindings
-      [maven-release-plugin] prepare release metrics.goodwill-access-0.0.10
-
