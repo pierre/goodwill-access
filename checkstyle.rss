@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>goodwill-access - Checkstyle report</title>
+    <link>http://github.com/pierre/goodwill-access</link>
+    <description>goodwill-access - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2010 - 2011 Ning, Inc.</copyright>
+    <item>
+      <title>File: 5,
+             Errors: 557,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://github.com/pierre/goodwill-access/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://github.com/pierre/goodwill-access/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://github.com/pierre/goodwill-access/checkstyle.html#com.ning.metrics.goodwill.access.GoodwillAccessor.java">com/ning/metrics/goodwill/access/GoodwillAccessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  78
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://github.com/pierre/goodwill-access/checkstyle.html#com.ning.metrics.goodwill.access.CachingGoodwillAccessor.java">com/ning/metrics/goodwill/access/CachingGoodwillAccessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  60
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://github.com/pierre/goodwill-access/checkstyle.html#com.ning.metrics.goodwill.access.GoodwillSchema.java">com/ning/metrics/goodwill/access/GoodwillSchema.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  128
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://github.com/pierre/goodwill-access/checkstyle.html#com.ning.metrics.goodwill.access.Accessor.java">com/ning/metrics/goodwill/access/Accessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://github.com/pierre/goodwill-access/checkstyle.html#com.ning.metrics.goodwill.access.GoodwillSchemaField.java">com/ning/metrics/goodwill/access/GoodwillSchemaField.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  262
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
