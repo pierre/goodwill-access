@@ -18,7 +18,7 @@
     <parent>
         <groupId>com.ning</groupId>
         <artifactId>metrics.base-pom</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.0.14</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ning</groupId>
@@ -50,6 +50,10 @@
         <dependency>
             <groupId>com.ning</groupId>
             <artifactId>metrics.serialization-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
