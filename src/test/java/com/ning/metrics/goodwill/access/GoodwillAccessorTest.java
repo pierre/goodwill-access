@@ -16,8 +16,9 @@
 
 package com.ning.metrics.goodwill.access;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -32,7 +33,7 @@ public class GoodwillAccessorTest
         GoodwillAccessor accessor = new GoodwillAccessor("localhost", 8080);
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
         Future<List<GoodwillSchema>> thrifts = accessor.getSchemata();
 

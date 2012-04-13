@@ -16,8 +16,8 @@
 
 package com.ning.metrics.goodwill.access;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.eclipse.jetty.server.HttpConnection;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.jetty.server.AbstractHttpConnection;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
@@ -61,7 +61,7 @@ public class CachingGoodwillAccessorTest
         server = new Server()
         {
             @Override
-            public void handle(HttpConnection connection) throws IOException, ServletException
+            public void handle(AbstractHttpConnection connection) throws IOException, ServletException
             {
                 serversHits.incrementAndGet();
                 final Request request = connection.getRequest();
