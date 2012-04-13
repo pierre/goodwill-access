@@ -24,7 +24,7 @@
     <groupId>com.ning</groupId>
     <artifactId>metrics.goodwill-access</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <name>goodwill-access</name>
     <description>Access library for Goodwill</description>
     <url>http://github.com/pierre/goodwill-access</url>
